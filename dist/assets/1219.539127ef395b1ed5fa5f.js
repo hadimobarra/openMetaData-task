@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkopen_metadata=self.webpackChunkopen_metadata||[]).push([[1219],{11219:function(a,e,n){n.r(e),e.default=n.p+"ss-landing.png"}}]);

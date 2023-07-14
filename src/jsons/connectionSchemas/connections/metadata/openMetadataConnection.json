@@ -1,0 +1,484 @@
+{
+  "$id": "https://open-metadata.org/schema/entity/services/connections/metadata/openMetadataConnection.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OpenMetadataConnection",
+  "description": "OpenMetadata Connection Config",
+  "type": "object",
+  "javaType": "org.openmetadata.schema.services.connections.metadata.OpenMetadataConnection",
+  "definitions": {
+    "openmetadataType": {
+      "description": "OpenMetadata service type",
+      "type": "string",
+      "enum": [
+        "OpenMetadata"
+      ],
+      "default": "OpenMetadata"
+    },
+    "extraHeaders": {
+      "description": "Additional headers to be sent to the API endpoint.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "properties": {
+    "clusterName": {
+      "description": "Cluster name to differentiate OpenMetadata Server instance",
+      "type": "string",
+      "default": "openmetadata"
+    },
+    "type": {
+      "description": "Service Type",
+      "$ref": "#/definitions/openmetadataType",
+      "default": "OpenMetadata"
+    },
+    "hostPort": {
+      "description": "OpenMetadata Server Config. Must include API end point ex: http://localhost:8585/api",
+      "type": "string",
+      "default": "http://localhost:8585/api"
+    },
+    "authProvider": {
+      "description": "OpenMetadata Server Authentication Provider. Make sure configure same auth providers as the one configured on OpenMetadata server.",
+      "type": "string",
+      "enum": [
+        "no-auth",
+        "azure",
+        "google",
+        "okta",
+        "auth0",
+        "custom-oidc",
+        "openmetadata"
+      ],
+      "default": "no-auth"
+    },
+    "verifySSL": {
+      "default": "no-ssl",
+      "description": "Client SSL verification. Make sure to configure the SSLConfig if enabled.",
+      "javaType": "org.openmetadata.schema.security.ssl.VerifySSL",
+      "type": "string",
+      "enum": [
+        "no-ssl",
+        "ignore",
+        "validate"
+      ]
+    },
+    "sslConfig": {
+      "description": "Client SSL configuration",
+      "javaType": "org.openmetadata.schema.security.ssl.SSLConfig",
+      "oneOf": [
+        {
+          "$id": "https://open-metadata.org/schema/security/ssl/validateSSLClientConfig.json",
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "title": "ValidateSSLClientConfig",
+          "description": "OpenMetadata Client configured to validate SSL certificates.",
+          "type": "object",
+          "javaType": "org.openmetadata.schema.security.ssl.ValidateSSLClientConfig",
+          "properties": {
+            "certificatePath": {
+              "description": "CA certificate path. E.g., /path/to/public.cert. Will be used if Verify SSL is set to `validate`.",
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "securityConfig": {
+      "mask": true,
+      "description": "OpenMetadata Client security configuration.",
+      "oneOf": [
+        {
+          "$id": "https://open-metadata.org/schema/security/client/googleSSOClientConfig.json",
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "title": "GoogleSSOClientConfig",
+          "description": "Google SSO client security configs.",
+          "type": "object",
+          "javaType": "org.openmetadata.schema.security.client.GoogleSSOClientConfig",
+          "properties": {
+            "secretKey": {
+              "description": "Google SSO client secret key path or contents.",
+              "type": "string",
+              "format": "password"
+            },
+            "audience": {
+              "description": "Google SSO audience URL",
+              "type": "string",
+              "default": "https://www.googleapis.com/oauth2/v4/token"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "secretKey"
+          ]
+        },
+        {
+          "$id": "https://open-metadata.org/schema/security/client/oktaSSOClientConfig.json",
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "title": "OktaSSOClientConfig",
+          "description": "Okta SSO client security configs.",
+          "type": "object",
+          "javaType": "org.openmetadata.schema.security.client.OktaSSOClientConfig",
+          "properties": {
+            "clientId": {
+              "description": "Okta Client ID.",
+              "type": "string"
+            },
+            "orgURL": {
+              "description": "Okta org url.",
+              "type": "string"
+            },
+            "privateKey": {
+              "description": "Okta Private Key.",
+              "type": "string",
+              "format": "password"
+            },
+            "email": {
+              "description": "Okta Service account Email.",
+              "type": "string"
+            },
+            "scopes": {
+              "type": "array",
+              "description": "Okta client scopes.",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "clientId",
+            "orgURL",
+            "privateKey",
+            "email"
+          ]
+        },
+        {
+          "$id": "https://open-metadata.org/schema/security/client/auth0SSOClientConfig.json",
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "title": "Auth0SSOClientConfig",
+          "description": "Auth0 SSO client security configs.",
+          "type": "object",
+          "javaType": "org.openmetadata.schema.security.client.Auth0SSOClientConfig",
+          "properties": {
+            "clientId": {
+              "description": "Auth0 Client ID.",
+              "type": "string"
+            },
+            "secretKey": {
+              "description": "Auth0 Client Secret Key.",
+              "type": "string",
+              "format": "password"
+            },
+            "domain": {
+              "description": "Auth0 Domain.",
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "clientId",
+            "secretKey",
+            "domain"
+          ]
+        },
+        {
+          "$id": "https://open-metadata.org/schema/security/client/azureSSOClientConfig.json",
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "title": "AzureSSOClientConfig",
+          "description": "Azure SSO Client security config to connect to OpenMetadata.",
+          "type": "object",
+          "javaType": "org.openmetadata.schema.security.client.AzureSSOClientConfig",
+          "properties": {
+            "clientSecret": {
+              "description": "Azure SSO client secret key",
+              "type": "string",
+              "format": "password"
+            },
+            "authority": {
+              "description": "Azure SSO Authority",
+              "type": "string"
+            },
+            "clientId": {
+              "description": "Azure Client ID.",
+              "type": "string"
+            },
+            "scopes": {
+              "description": "Azure Client ID.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "clientSecret",
+            "clientId",
+            "authority",
+            "scopes"
+          ]
+        },
+        {
+          "$id": "https://open-metadata.org/schema/security/client/customOidcSSOClientConfig.json",
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "title": "CustomOIDCSSOClientConfig",
+          "description": "Custom OIDC SSO client security configs.",
+          "type": "object",
+          "javaType": "org.openmetadata.schema.security.client.CustomOIDCSSOClientConfig",
+          "properties": {
+            "clientId": {
+              "description": "Custom OIDC Client ID.",
+              "type": "string"
+            },
+            "secretKey": {
+              "description": "Custom OIDC Client Secret Key.",
+              "type": "string",
+              "format": "password"
+            },
+            "tokenEndpoint": {
+              "description": "Custom OIDC token endpoint.",
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "clientId",
+            "secretKey",
+            "tokenEndpoint"
+          ]
+        },
+        {
+          "$id": "https://open-metadata.org/schema/security/client/openMetadataJWTClientConfig.json",
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "title": "openMetadataJWTClientConfig",
+          "description": "openMetadataJWTClientConfig security configs.",
+          "type": "object",
+          "javaType": "org.openmetadata.schema.security.client.OpenMetadataJWTClientConfig",
+          "properties": {
+            "jwtToken": {
+              "description": "OpenMetadata generated JWT token.",
+              "type": "string",
+              "format": "password"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "jwtToken"
+          ]
+        }
+      ]
+    },
+    "secretsManagerProvider": {
+      "default": "noop",
+      "$id": "https://open-metadata.org/schema/security/secrets/secretsManagerProvider.json",
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Secrets Manager Provider",
+      "description": "OpenMetadata Secrets Manager Provider. Make sure to configure the same secrets manager providers as the ones configured on the OpenMetadata server.",
+      "type": "string",
+      "javaType": "org.openmetadata.schema.security.secrets.SecretsManagerProvider",
+      "enum": [
+        "noop",
+        "managed-aws",
+        "aws",
+        "managed-aws-ssm",
+        "aws-ssm",
+        "in-memory"
+      ],
+      "additionalProperties": false
+    },
+    "secretsManagerCredentials": {
+      "description": "OpenMetadata Secrets Manager Client credentials",
+      "oneOf": [
+        {
+          "$id": "https://open-metadata.org/security/credentials/awsCredentials.json",
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "title": "AWSCredentials",
+          "description": "AWS credentials configs.",
+          "type": "object",
+          "javaType": "org.openmetadata.schema.security.credentials.AWSCredentials",
+          "properties": {
+            "awsAccessKeyId": {
+              "title": "AWS Access Key ID",
+              "description": "AWS Access key ID.",
+              "type": "string"
+            },
+            "awsSecretAccessKey": {
+              "title": "AWS Secret Access Key",
+              "description": "AWS Secret Access Key.",
+              "type": "string",
+              "format": "password"
+            },
+            "awsRegion": {
+              "title": "AWS Region",
+              "description": "AWS Region",
+              "type": "string"
+            },
+            "awsSessionToken": {
+              "title": "AWS Session Token",
+              "description": "AWS Session Token.",
+              "type": "string"
+            },
+            "endPointURL": {
+              "title": "Endpoint URL",
+              "description": "EndPoint URL for the AWS",
+              "type": "string",
+              "format": "uri"
+            },
+            "profileName": {
+              "title": "Profile Name",
+              "description": "The name of a profile to use with the boto session.",
+              "type": "string"
+            },
+            "assumeRoleArn": {
+              "title": "Role Arn for Assume Role",
+              "description": "The Amazon Resource Name (ARN) of the role to assume. Required Field in case of Assume Role",
+              "type": "string"
+            },
+            "assumeRoleSessionName": {
+              "title": "Role Session Name for Assume Role",
+              "description": "An identifier for the assumed role session. Use the role session name to uniquely identify a session when the same role is assumed by different principals or for different reasons. Required Field in case of Assume Role",
+              "type": "string",
+              "default": "OpenMetadataSession"
+            },
+            "assumeRoleSourceIdentity": {
+              "title": "Source Identity for Assume Role",
+              "description": "The Amazon Resource Name (ARN) of the role to assume. Optional Field in case of Assume Role",
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "awsRegion"
+          ]
+        }
+      ]
+    },
+    "apiVersion": {
+      "description": "OpenMetadata server API version to use.",
+      "type": "string",
+      "default": "v1"
+    },
+    "includeTopics": {
+      "description": "Include Topics for Indexing",
+      "type": "boolean",
+      "default": true
+    },
+    "includeTables": {
+      "description": "Include Tables for Indexing",
+      "type": "boolean",
+      "default": true
+    },
+    "includeDashboards": {
+      "description": "Include Dashboards for Indexing",
+      "type": "boolean",
+      "default": true
+    },
+    "includePipelines": {
+      "description": "Include Pipelines for Indexing",
+      "type": "boolean",
+      "default": true
+    },
+    "includeMlModels": {
+      "description": "Include MlModels for Indexing",
+      "type": "boolean",
+      "default": true
+    },
+    "includeUsers": {
+      "description": "Include Users for Indexing",
+      "type": "boolean",
+      "default": true
+    },
+    "includeTeams": {
+      "description": "Include Teams for Indexing",
+      "type": "boolean",
+      "default": true
+    },
+    "includeGlossaryTerms": {
+      "description": "Include Glossary Terms for Indexing",
+      "type": "boolean",
+      "default": true
+    },
+    "includeTags": {
+      "description": "Include Tags for Indexing",
+      "type": "boolean",
+      "default": true
+    },
+    "includePolicy": {
+      "description": "Include Tags for Policy",
+      "type": "boolean",
+      "default": true
+    },
+    "includeMessagingServices": {
+      "description": "Include Messaging Services for Indexing",
+      "type": "boolean",
+      "default": true
+    },
+    "enableVersionValidation": {
+      "description": "Validate Openmetadata Server & Client Version.",
+      "type": "boolean",
+      "default": true
+    },
+    "includeDatabaseServices": {
+      "description": "Include Database Services for Indexing",
+      "type": "boolean",
+      "default": true
+    },
+    "includePipelineServices": {
+      "description": "Include Pipeline Services for Indexing",
+      "type": "boolean",
+      "default": true
+    },
+    "limitRecords": {
+      "description": "Limit the number of records for Indexing.",
+      "type": "integer",
+      "default": "1000"
+    },
+    "forceEntityOverwriting": {
+      "description": "Force the overwriting of any entity during the ingestion.",
+      "type": "boolean",
+      "default": false
+    },
+    "elasticsSearch": {
+      "description": "Configuration for Sink Component in the OpenMetadata Ingestion Framework.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "Type of sink component ex: metadata",
+          "type": "string"
+        },
+        "config": {
+          "description": "key/value pairs to pass to workflow component.",
+          "type": "object",
+          "additionalProperties": {
+            ".{1,}": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ]
+    },
+    "supportsDataInsightExtraction": {
+      "description": "Support Metadata To Elastic Search",
+      "type": "boolean",
+      "default": true
+    },
+    "supportsElasticSearchReindexingExtraction": {
+      "description": "Support Elastic Search Reindexing",
+      "type": "boolean",
+      "default": true
+    },
+    "extraHeaders": {
+      "title": "Extra Headers",
+      "$ref": "#/definitions/extraHeaders"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "hostPort"
+  ]
+}

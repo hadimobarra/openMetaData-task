@@ -1,0 +1,548 @@
+{
+  "$id": "https://open-metadata.org/schema/entity/services/connections/pipeline/airflowConnection.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AirflowConnection",
+  "description": "Airflow Metadata Database Connection Config",
+  "type": "object",
+  "javaType": "org.openmetadata.schema.services.connections.pipeline.AirflowConnection",
+  "definitions": {
+    "AirflowType": {
+      "description": "Service type.",
+      "type": "string",
+      "enum": [
+        "Airflow"
+      ],
+      "default": "Airflow"
+    }
+  },
+  "properties": {
+    "type": {
+      "title": "Service Type",
+      "description": "Service Type",
+      "$ref": "#/definitions/AirflowType",
+      "default": "Airflow"
+    },
+    "hostPort": {
+      "expose": true,
+      "title": "Host And Port",
+      "description": "Pipeline Service Management/UI URI.",
+      "type": "string",
+      "format": "uri"
+    },
+    "numberOfStatus": {
+      "description": "Pipeline Service Number Of Status",
+      "type": "integer",
+      "default": "10"
+    },
+    "connection": {
+      "title": "Metadata Database Connection",
+      "description": "Underlying database connection. See https://airflow.apache.org/docs/apache-airflow/stable/howto/set-up-database.html for supported backends.",
+      "oneOf": [
+        {
+          "$id": "https://open-metadata.org/schema/entity/services/connections/pipeline/backendConnection.json",
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "title": "BackendConnection",
+          "description": "Lineage Backend Connection Config",
+          "type": "object",
+          "javaType": "org.openmetadata.schema.services.connections.pipeline.BackendConnection",
+          "definitions": {
+            "BackendType": {
+              "description": "Service type.",
+              "type": "string",
+              "enum": [
+                "Backend"
+              ],
+              "default": "Backend"
+            }
+          },
+          "properties": {
+            "type": {
+              "title": "Service Type",
+              "description": "Service Type",
+              "$ref": "#/properties/connection/oneOf/0/definitions/BackendType",
+              "default": "Backend"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "$id": "https://open-metadata.org/schema/entity/services/connections/database/mysqlConnection.json",
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "title": "MysqlConnection",
+          "description": "Mysql Database Connection Config",
+          "type": "object",
+          "javaType": "org.openmetadata.schema.services.connections.database.MysqlConnection",
+          "definitions": {
+            "mySQLType": {
+              "description": "Service type.",
+              "type": "string",
+              "enum": [
+                "Mysql"
+              ],
+              "default": "Mysql"
+            },
+            "mySQLScheme": {
+              "description": "SQLAlchemy driver scheme options.",
+              "type": "string",
+              "enum": [
+                "mysql+pymysql"
+              ],
+              "default": "mysql+pymysql"
+            }
+          },
+          "properties": {
+            "type": {
+              "title": "Service Type",
+              "description": "Service Type",
+              "$ref": "#/properties/connection/oneOf/1/definitions/mySQLType",
+              "default": "Mysql"
+            },
+            "scheme": {
+              "title": "Connection Scheme",
+              "description": "SQLAlchemy driver scheme options.",
+              "$ref": "#/properties/connection/oneOf/1/definitions/mySQLScheme",
+              "default": "mysql+pymysql"
+            },
+            "username": {
+              "title": "Username",
+              "description": "Username to connect to MySQL. This user should have privileges to read all the metadata in Mysql.",
+              "type": "string"
+            },
+            "password": {
+              "title": "Password",
+              "description": "Password to connect to MySQL.",
+              "type": "string",
+              "format": "password"
+            },
+            "hostPort": {
+              "title": "Host and Port",
+              "description": "Host and port of the MySQL service.",
+              "type": "string"
+            },
+            "databaseName": {
+              "title": "Database Name",
+              "description": "Optional name to give to the database in OpenMetadata. If left blank, we will use default as the database name.",
+              "type": "string"
+            },
+            "databaseSchema": {
+              "title": "Database Schema",
+              "description": "Database Schema of the data source. This is optional parameter, if you would like to restrict the metadata reading to a single schema. When left blank, OpenMetadata Ingestion attempts to scan all the schemas.",
+              "type": "string"
+            },
+            "sslCA": {
+              "title": "SSL CA",
+              "description": "Provide the path to ssl ca file",
+              "type": "string"
+            },
+            "sslCert": {
+              "title": "SSL Client Certificate File",
+              "description": "Provide the path to ssl client certificate file (ssl_cert)",
+              "type": "string"
+            },
+            "sslKey": {
+              "title": "SSL Client Key File",
+              "description": "Provide the path to ssl client certificate file (ssl_key)",
+              "type": "string"
+            },
+            "connectionOptions": {
+              "title": "Connection Options",
+              "javaType": "org.openmetadata.schema.services.connections.database.ConnectionOptions",
+              "description": "Additional connection options to build the URL that can be sent to service during the connection.",
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "connectionArguments": {
+              "title": "Connection Arguments",
+              "javaType": "org.openmetadata.schema.services.connections.database.ConnectionArguments",
+              "description": "Additional connection arguments such as security or protocol configs that can be sent to service during connection.",
+              "type": "object",
+              "additionalProperties": {
+                ".{1,}": {
+                  "type": "string"
+                }
+              }
+            },
+            "supportsMetadataExtraction": {
+              "title": "Supports Metadata Extraction",
+              "$ref": "#/properties/supportsMetadataExtraction"
+            },
+            "supportsDBTExtraction": {
+              "description": "Supports DBT Extraction.",
+              "type": "boolean",
+              "default": true
+            },
+            "supportsProfiler": {
+              "title": "Supports Profiler",
+              "description": "Supports Profiler",
+              "type": "boolean",
+              "default": true
+            },
+            "supportsQueryComment": {
+              "title": "Supports Query Comment",
+              "description": "For Database Services using SQLAlchemy, True to enable running a comment for all queries run from OpenMetadata.",
+              "type": "boolean",
+              "default": true
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "hostPort",
+            "username"
+          ]
+        },
+        {
+          "$id": "https://open-metadata.org/schema/entity/services/connections/database/postgresConnection.json",
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "title": "PostgresConnection",
+          "description": "Postgres Database Connection Config",
+          "type": "object",
+          "javaType": "org.openmetadata.schema.services.connections.database.PostgresConnection",
+          "definitions": {
+            "postgresType": {
+              "description": "Service type.",
+              "type": "string",
+              "enum": [
+                "Postgres"
+              ],
+              "default": "Postgres"
+            },
+            "postgresScheme": {
+              "description": "SQLAlchemy driver scheme options.",
+              "type": "string",
+              "enum": [
+                "postgresql+psycopg2"
+              ],
+              "default": "postgresql+psycopg2"
+            }
+          },
+          "properties": {
+            "type": {
+              "title": "Service Type",
+              "description": "Service Type",
+              "$ref": "#/properties/connection/oneOf/2/definitions/postgresType",
+              "default": "Postgres"
+            },
+            "scheme": {
+              "title": "Connection Scheme",
+              "description": "SQLAlchemy driver scheme options.",
+              "$ref": "#/properties/connection/oneOf/2/definitions/postgresScheme",
+              "default": "postgresql+psycopg2"
+            },
+            "username": {
+              "title": "Username",
+              "description": "Username to connect to Postgres. This user should have privileges to read all the metadata in Postgres.",
+              "type": "string"
+            },
+            "password": {
+              "title": "Password",
+              "description": "Password to connect to Postgres.",
+              "type": "string",
+              "format": "password"
+            },
+            "hostPort": {
+              "title": "Host and Port",
+              "description": "Host and port of the Postgres service.",
+              "type": "string"
+            },
+            "database": {
+              "title": "Database",
+              "description": "Database of the data source. This is optional parameter, if you would like to restrict the metadata reading to a single database. When left blank, OpenMetadata Ingestion attempts to scan all the databases.",
+              "type": "string"
+            },
+            "sslMode": {
+              "title": "SSL Mode",
+              "description": "SSL Mode to connect to postgres database.",
+              "enum": [
+                "disable",
+                "allow",
+                "prefer",
+                "require",
+                "verify-ca",
+                "verify-full"
+              ],
+              "default": "disable"
+            },
+            "sslConfig": {
+              "description": "Client SSL configuration",
+              "javaType": "org.openmetadata.schema.security.ssl.SSLConfig",
+              "oneOf": [
+                {
+                  "$id": "https://open-metadata.org/schema/security/ssl/validateSSLClientConfig.json",
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "title": "ValidateSSLClientConfig",
+                  "description": "OpenMetadata Client configured to validate SSL certificates.",
+                  "type": "object",
+                  "javaType": "org.openmetadata.schema.security.ssl.ValidateSSLClientConfig",
+                  "properties": {
+                    "certificatePath": {
+                      "description": "CA certificate path. E.g., /path/to/public.cert. Will be used if Verify SSL is set to `validate`.",
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "classificationName": {
+              "title": "Classification Name",
+              "description": "Custom OpenMetadata Classification name for Postgres policy tags.",
+              "type": "string",
+              "default": "PostgresPolicyTags"
+            },
+            "ingestAllDatabases": {
+              "title": "Ingest All Databases",
+              "description": "Ingest data from all databases in Postgres. You can use databaseFilterPattern on top of this.",
+              "type": "boolean",
+              "default": false
+            },
+            "connectionOptions": {
+              "title": "Connection Options",
+              "$ref": "#/properties/connection/oneOf/1/properties/connectionOptions"
+            },
+            "connectionArguments": {
+              "title": "Connection Arguments",
+              "$ref": "#/properties/connection/oneOf/1/properties/connectionArguments"
+            },
+            "supportsMetadataExtraction": {
+              "title": "Supports Metadata Extraction",
+              "$ref": "#/properties/supportsMetadataExtraction"
+            },
+            "supportsUsageExtraction": {
+              "description": "Supports Usage Extraction.",
+              "type": "boolean",
+              "default": true
+            },
+            "supportsLineageExtraction": {
+              "description": "Supports Lineage Extraction.",
+              "type": "boolean",
+              "default": true
+            },
+            "supportsDBTExtraction": {
+              "$ref": "#/properties/connection/oneOf/1/properties/supportsDBTExtraction"
+            },
+            "supportsProfiler": {
+              "title": "Supports Profiler",
+              "$ref": "#/properties/connection/oneOf/1/properties/supportsProfiler"
+            },
+            "supportsDatabase": {
+              "title": "Supports Database",
+              "description": "The source service supports the database concept in its hierarchy",
+              "type": "boolean",
+              "default": true
+            },
+            "supportsQueryComment": {
+              "title": "Supports Query Comment",
+              "$ref": "#/properties/connection/oneOf/1/properties/supportsQueryComment"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "hostPort",
+            "username",
+            "database"
+          ]
+        },
+        {
+          "$id": "https://open-metadata.org/schema/entity/services/connections/database/mssqlConnection.json",
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "title": "MssqlConnection",
+          "description": "Mssql Database Connection Config",
+          "type": "object",
+          "javaType": "org.openmetadata.schema.services.connections.database.MssqlConnection",
+          "definitions": {
+            "mssqlType": {
+              "description": "Service type.",
+              "type": "string",
+              "enum": [
+                "Mssql"
+              ],
+              "default": "Mssql"
+            },
+            "mssqlScheme": {
+              "description": "SQLAlchemy driver scheme options.",
+              "type": "string",
+              "enum": [
+                "mssql+pyodbc",
+                "mssql+pytds",
+                "mssql+pymssql"
+              ],
+              "default": "mssql+pytds"
+            }
+          },
+          "properties": {
+            "type": {
+              "title": "Service Type",
+              "description": "Service Type",
+              "$ref": "#/properties/connection/oneOf/3/definitions/mssqlType",
+              "default": "Mssql"
+            },
+            "scheme": {
+              "title": "Connection Scheme",
+              "description": "SQLAlchemy driver scheme options.",
+              "$ref": "#/properties/connection/oneOf/3/definitions/mssqlScheme",
+              "default": "mssql+pytds"
+            },
+            "username": {
+              "title": "Username",
+              "description": "Username to connect to MSSQL. This user should have privileges to read all the metadata in MsSQL.",
+              "type": "string"
+            },
+            "password": {
+              "title": "Password",
+              "description": "Password to connect to MSSQL.",
+              "type": "string",
+              "format": "password"
+            },
+            "hostPort": {
+              "title": "Host and Port",
+              "description": "Host and port of the MSSQL service.",
+              "type": "string"
+            },
+            "database": {
+              "title": "Database",
+              "description": "Database of the data source. This is optional parameter, if you would like to restrict the metadata reading to a single database. When left blank, OpenMetadata Ingestion attempts to scan all the databases.",
+              "type": "string"
+            },
+            "driver": {
+              "title": "Driver",
+              "description": "ODBC driver version in case of pyodbc connection.",
+              "type": "string",
+              "default": "ODBC Driver 18 for SQL Server"
+            },
+            "connectionOptions": {
+              "title": "Connection Options",
+              "$ref": "#/properties/connection/oneOf/1/properties/connectionOptions"
+            },
+            "connectionArguments": {
+              "title": "Connection Arguments",
+              "$ref": "#/properties/connection/oneOf/1/properties/connectionArguments"
+            },
+            "supportsMetadataExtraction": {
+              "title": "Supports Metadata Extraction",
+              "$ref": "#/properties/supportsMetadataExtraction"
+            },
+            "supportsDBTExtraction": {
+              "$ref": "#/properties/connection/oneOf/1/properties/supportsDBTExtraction"
+            },
+            "supportsProfiler": {
+              "title": "Supports Profiler",
+              "$ref": "#/properties/connection/oneOf/1/properties/supportsProfiler"
+            },
+            "supportsDatabase": {
+              "title": "Supports Database",
+              "$ref": "#/properties/connection/oneOf/2/properties/supportsDatabase"
+            },
+            "supportsUsageExtraction": {
+              "$ref": "#/properties/connection/oneOf/2/properties/supportsUsageExtraction"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "$id": "https://open-metadata.org/schema/entity/services/connections/database/sqliteConnection.json",
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "title": "SQLiteConnection",
+          "description": "SQLite Database Connection Config",
+          "type": "object",
+          "javaType": "org.openmetadata.schema.services.connections.database.SQLiteConnection",
+          "definitions": {
+            "SQLiteType": {
+              "description": "Service type.",
+              "type": "string",
+              "enum": [
+                "SQLite"
+              ],
+              "default": "SQLite"
+            },
+            "SQLiteScheme": {
+              "description": "SQLAlchemy driver scheme options.",
+              "type": "string",
+              "enum": [
+                "sqlite+pysqlite"
+              ],
+              "default": "sqlite+pysqlite"
+            }
+          },
+          "properties": {
+            "type": {
+              "title": "Service Type",
+              "description": "Service Type",
+              "$ref": "#/properties/connection/oneOf/4/definitions/SQLiteType",
+              "default": "SQLite"
+            },
+            "scheme": {
+              "title": "Connection Scheme",
+              "description": "SQLAlchemy driver scheme options.",
+              "$ref": "#/properties/connection/oneOf/4/definitions/SQLiteScheme",
+              "default": "sqlite+pysqlite"
+            },
+            "username": {
+              "title": "Username",
+              "description": "Username to connect to SQLite. Blank for in-memory database.",
+              "type": "string"
+            },
+            "password": {
+              "title": "Password",
+              "description": "Password to connect to SQLite. Blank for in-memory database.",
+              "type": "string",
+              "format": "password"
+            },
+            "hostPort": {
+              "title": "Host and Port",
+              "description": "Host and port of the SQLite service. Blank for in-memory database.",
+              "type": "string"
+            },
+            "database": {
+              "title": "Database",
+              "description": "Database of the data source. This is optional parameter, if you would like to restrict the metadata reading to a single database. When left blank, OpenMetadata Ingestion attempts to scan all the databases.",
+              "type": "string"
+            },
+            "databaseMode": {
+              "title": "Database Mode",
+              "description": "How to run the SQLite database. :memory: by default.",
+              "type": "string",
+              "default": ":memory:"
+            },
+            "connectionOptions": {
+              "title": "Connection Options",
+              "$ref": "#/properties/connection/oneOf/1/properties/connectionOptions"
+            },
+            "connectionArguments": {
+              "title": "Connection Arguments",
+              "$ref": "#/properties/connection/oneOf/1/properties/connectionArguments"
+            },
+            "supportsMetadataExtraction": {
+              "title": "Supports Metadata Extraction",
+              "$ref": "#/properties/supportsMetadataExtraction"
+            },
+            "supportsDBTExtraction": {
+              "$ref": "#/properties/connection/oneOf/1/properties/supportsDBTExtraction"
+            },
+            "supportsProfiler": {
+              "title": "Supports Profiler",
+              "$ref": "#/properties/connection/oneOf/1/properties/supportsProfiler"
+            },
+            "supportsQueryComment": {
+              "title": "Supports Query Comment",
+              "$ref": "#/properties/connection/oneOf/1/properties/supportsQueryComment"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "supportsMetadataExtraction": {
+      "title": "Supports Metadata Extraction",
+      "description": "Supports Metadata Extraction.",
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "hostPort",
+    "connection"
+  ]
+}

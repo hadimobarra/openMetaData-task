@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkopen_metadata=self.webpackChunkopen_metadata||[]).push([[7230],{37230:function(a,e,t){t.r(e),e.default=t.p+"about-us.png"}}]);

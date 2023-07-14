@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkopen_metadata=self.webpackChunkopen_metadata||[]).push([[5131],{29595:function(e,t,a){a.r(t),t.default=a.p+"confetti-bg.jpeg"}}]);

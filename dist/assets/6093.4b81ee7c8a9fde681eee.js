@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkopen_metadata=self.webpackChunkopen_metadata||[]).push([[6093],{16093:function(e,a,t){t.r(a),a.default=t.p+"ss-table-details.png"}}]);
